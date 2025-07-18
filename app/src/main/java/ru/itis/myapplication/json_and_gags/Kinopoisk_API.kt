@@ -1,5 +1,4 @@
 package ru.itis.myapplication.json_and_gags
 
-class SecretStrings {
-    val API_key = "1"
+class Kinopoisk_API {
 }
