@@ -4,10 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ru.itis.myapplication.R
 
 class FeatureFilmInfo_Fragment : Fragment(){
+    private  lateinit var imagePoster: ImageView
+    private lateinit var textTitle: TextView
+    private lateinit var textDescription: TextView
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
