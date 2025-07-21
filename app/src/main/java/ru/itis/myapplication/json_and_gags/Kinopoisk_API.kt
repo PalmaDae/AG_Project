@@ -18,4 +18,18 @@ class Kinopoisk_API {
         genre: String? = null,
         ratingRange: String? = null
     ) = service.getMovies(year, genre, ratingRange, apiKey)
+
+    fun getMovies2(
+        year: Int? = null,
+        genre: String? = null,
+        ratingRange: String? = null,
+        limit: Int? = null
+    ): MoviesResponse = service.getMovies2(year, genre, ratingRange, limit, apiKey)
+
+    fun searchMovies(
+        query: String,
+        page: Int = 1,
+        limit: Int = 10
+    ): List<Movie> = service.searchMovies(query = query, page = page, limit = limit, apiKey = apiKey).movies
+
 }
