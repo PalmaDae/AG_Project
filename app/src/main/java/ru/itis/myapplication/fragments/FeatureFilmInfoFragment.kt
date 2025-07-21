@@ -14,7 +14,7 @@ import ru.itis.myapplication.json_and_gags.Movie
 import ru.itis.myapplication.json_and_gags.Poster
 import ru.itis.myapplication.json_and_gags.Rating
 
-class FeatureFilmInfo_Fragment : Fragment(){
+class FeatureFilmInfoFragment : Fragment(){
     private lateinit var imagePoster: ImageView
     private lateinit var textTitle: TextView
     private lateinit var textDescription: TextView

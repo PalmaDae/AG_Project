@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.itis.myapplication.R
 import ru.itis.myapplication.adapter.MoviesAdapter
-import ru.itis.myapplication.json_and_gags.Kinopoisk_API
 import ru.itis.myapplication.json_and_gags.Movie
 import ru.itis.myapplication.json_and_gags.Poster
 import ru.itis.myapplication.json_and_gags.Rating
