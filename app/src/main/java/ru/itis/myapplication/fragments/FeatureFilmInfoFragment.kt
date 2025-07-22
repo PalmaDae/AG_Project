@@ -60,5 +60,14 @@ class FeatureFilmInfoFragment : Fragment(){
         )
 
         showMovieInfo(movie)
+
+        val actionButton: View = view.findViewById(R.id.floatingActionButton)
+
+        actionButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ReviewFragment())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 }

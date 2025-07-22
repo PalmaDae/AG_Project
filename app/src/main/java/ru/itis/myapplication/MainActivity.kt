@@ -2,6 +2,7 @@ package ru.itis.myapplication
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import ru.itis.myapplication.fragments.FeatureFilmInfoFragment
 import ru.itis.myapplication.fragments.HomeFragment
 
 class MainActivity : AppCompatActivity() {
@@ -12,7 +13,7 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, HomeFragment())
+                .replace(R.id.fragment_container, FeatureFilmInfoFragment())
                 .commit()
         }
     }
