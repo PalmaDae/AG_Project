@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.CoroutineScope
@@ -82,6 +85,15 @@ class FeatureFilmInfoFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        ViewCompat.setOnApplyWindowInsetsListener(view) { viewToApply, insets ->
+            val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            viewToApply.    updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = navBarInsets.bottom
+            }
+            insets
+        }
+
 
         movieId = arguments?.getInt(ARG_MOVIE_ID) ?: -1
 
