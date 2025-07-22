@@ -1,9 +1,11 @@
 package ru.itis.myapplication.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -18,12 +20,12 @@ import ru.itis.myapplication.adapter.MoviesAdapter
 import ru.itis.myapplication.json_and_gags.Movie
 import ru.itis.myapplication.json_and_gags.MovieRepository
 
-
 class HomeFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var moviesAdapter: MoviesAdapter
-    private lateinit var searchView: android.widget.SearchView
+    private lateinit var searchView: SearchView
+    private lateinit var progressBar: ProgressBar
     private var allMovies: List<Movie> = emptyList()
 
 
@@ -46,11 +48,19 @@ class HomeFragment : Fragment() {
         searchView = view.findViewById(R.id.searchView)
         searchView.setOnQueryTextListener(MyOnQueryTextListener())
 
+        progressBar = view.findViewById(R.id.progressBar)
+
         searchView.isIconified = false
         searchView.requestFocusFromTouch()
 
+        showLoading(true)
         loadRandomMovies()
 
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        recyclerView.visibility = if (isLoading) View.GONE else View.VISIBLE
     }
 
     inner class MyOnQueryTextListener : SearchView.OnQueryTextListener {
@@ -82,6 +92,10 @@ class HomeFragment : Fragment() {
                     ).show()
                     println("Error loading random movies: ${e.message}")
                 }
+            } finally {
+                withContext(Dispatchers.Main) {
+                    showLoading(false)
+                }
             }
         }
     }
@@ -89,6 +103,9 @@ class HomeFragment : Fragment() {
     private fun searchMovies(query: String?) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                withContext(Dispatchers.Main) {
+                    showLoading(true)
+                }
                 if (query != null && query.isNotEmpty()) {
                     val moviesResponse = MovieRepository.searchMovies(query = query)
                     val movies = moviesResponse.docs
@@ -100,13 +117,15 @@ class HomeFragment : Fragment() {
                     loadRandomMovies()
                 }
             } catch (e: Exception) {
+                Log.e("HomeFragment", "Error searching movies: ${e.message}", e)
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Error searching movies", Toast.LENGTH_SHORT).show()
-                    println("Error searching movies: ${e.message}")
+                    Toast.makeText(requireContext(), "Error searching movies: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            } finally {
+                withContext(Dispatchers.Main) {
+                    showLoading(false)
                 }
             }
         }
     }
-
 }
-
