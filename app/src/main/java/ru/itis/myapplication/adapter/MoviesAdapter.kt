@@ -30,11 +30,17 @@ class MoviesAdapter(private var movies: List<Movie>) : RecyclerView.Adapter<Movi
 
         val posterUrl = movie.poster?.url
 
-        Glide.with(holder.itemView.context)
-            .load(posterUrl)
-            .placeholder(R.drawable.ic_launcher_background)
-            .error(R.drawable.ic_error)
-            .into(holder.moviePoster)
+        if (posterUrl != null) {
+            Glide.with(holder.itemView.context)
+                .load(posterUrl)
+                .placeholder(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_error)
+                .into(holder.moviePoster)
+        } else {
+            Glide.with(holder.itemView.context)
+                .load(R.drawable.ic_launcher_background)
+                .into(holder.moviePoster)
+        }
 
         holder.movieRating.rating = movie.rating?.kp?.toFloat() ?: 0f
     }

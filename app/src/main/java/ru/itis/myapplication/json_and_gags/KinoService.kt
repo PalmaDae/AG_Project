@@ -1,11 +1,10 @@
 package ru.itis.myapplication.json_and_gags
 
-import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Header
 
-interface KinopoiskApiService {
+interface KinoService {
 
     @GET("v1.4/movie/{id}")
     suspend fun getMovieById(
@@ -14,7 +13,7 @@ interface KinopoiskApiService {
     ): Movie
 
     @GET("v1.4/movie/search")
-    fun searchMovies(
+    suspend fun searchMovies(
         @Query("query") query: String,
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
