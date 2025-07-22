@@ -9,6 +9,10 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.itis.myapplication.R
 import ru.itis.myapplication.json_and_gags.Movie
 import ru.itis.myapplication.json_and_gags.Poster
@@ -19,6 +23,9 @@ class FeatureFilmInfoFragment : Fragment(){
     private lateinit var textTitle: TextView
     private lateinit var textDescription: TextView
     private lateinit var ratingBar: RatingBar
+    private var movieId: Int = -1
+    private var posterUrl: String = ""
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,12 +35,24 @@ class FeatureFilmInfoFragment : Fragment(){
         return inflater.inflate(R.layout.fragment_film_info, container, false)
     }
 
+    companion object {
+        private const val ARG_MOVIE_ID = "movie_id"
+
+        fun newInstance(movieId: Int): FeatureFilmInfoFragment {
+            val fragment = FeatureFilmInfoFragment()
+            val args = Bundle()
+            args.putInt(ARG_MOVIE_ID, movieId)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
     private fun showMovieInfo(movie: Movie) {
         textTitle.text = movie.name
         textDescription.text = movie.description
         ratingBar.rating = movie.rating?.kp ?: 0f
 
-        val posterUrl = movie.poster?.url
+        posterUrl = movie.poster?.url ?: ""
 
         if (!posterUrl.isNullOrEmpty()) {
             Glide.with(this)
@@ -44,21 +63,49 @@ class FeatureFilmInfoFragment : Fragment(){
         }
     }
 
+    private fun loadMovieInfo() {
+        if (movieId == -1) return
+
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            try {
+                val movie = ru.itis.myapplication.json_and_gags.MovieRepository.getMovieById(movieId.toString())
+                withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    showMovieInfo(movie)
+                }
+            } catch (e: Exception) {
+                withContext(kotlinx.coroutines.Dispatchers.Main) {
+                }
+            }
+        }
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        movieId = arguments?.getInt(ARG_MOVIE_ID) ?: -1
 
         imagePoster = view.findViewById(R.id.posterIV)
         textTitle = view.findViewById(R.id.titleTV)
         textDescription = view.findViewById(R.id.descriptionTV)
         ratingBar = view.findViewById(R.id.ratingBar)
 
-        val movie = Movie(
-            name = "Dexter",
-            description = "He's smart. He's lovable. He's Dexter Morgan, America's favorite serial killer, who spends his days solving crimes and his nights committing them.",
-            poster = Poster(url = "https://avatars.mds.yandex.net/i?id=354e9b12d76c9e5c3a5ce6c6da6099a7_l-7004933-images-thumbs&n=13"),
-            rating = Rating(kp = 4.5f)
-        )
+        loadMovieInfo()
 
-        showMovieInfo(movie)
+        val actionButton: View = view.findViewById(R.id.floatingActionButton)
+
+        actionButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(
+                    R.id.fragment_container,
+                    ReviewFragment.newInstance(
+                        title = textTitle.text.toString(),
+                        posterUrl = posterUrl,
+                        rating = ratingBar.rating
+                    )
+                )
+            .addToBackStack(null)
+            .commit()
+        }
     }
 }

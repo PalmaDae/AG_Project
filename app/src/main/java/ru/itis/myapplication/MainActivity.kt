@@ -1,7 +1,9 @@
 package ru.itis.myapplication
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import ru.itis.myapplication.fragments.FeatureFilmInfoFragment
 import ru.itis.myapplication.fragments.HomeFragment
 
 class MainActivity : AppCompatActivity() {

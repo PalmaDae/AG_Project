@@ -15,7 +15,7 @@
         android:focusableInTouchMode="true"
         android:iconifiedByDefault="false"
         android:imeOptions="actionSearch"
-        android:queryHint="Поиск фильма"
+        android:queryHint="Поиск медиа"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

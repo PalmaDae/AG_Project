@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/featureFilmInfoFragment">
+
+    <fragment
+        android:id="@+id/featureFilmInfoFragment"
+        android:name="ru.itis.myapplication.fragments.FeatureFilmInfoFragment"
+        android:label="FeatureFilmInfoFragment" >
+        <action
+            android:id="@+id/action_featureFilmInfoFragment_to_reviewFragment"
+            app:destination="@id/reviewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reviewFragment"
+        android:name="ru.itis.myapplication.fragments.ReviewFragment"
+        android:label="ReviewFragment" />
+</navigation>
