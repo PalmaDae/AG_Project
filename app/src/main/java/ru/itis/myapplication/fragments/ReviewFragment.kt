@@ -65,6 +65,8 @@ class ReviewFragment : Fragment(){
                 .putString("review$movieID", reviewText)
                 .putFloat("rating$movieID", userRating)
                 .apply()
+
+            parentFragmentManager.popBackStack()
         }
     }
 
