@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import ru.itis.myapplication.R
 import ru.itis.myapplication.json_and_gags.Movie
 import ru.itis.myapplication.json_and_gags.Poster
@@ -32,8 +33,6 @@ class FeatureFilmInfoFragment : Fragment(){
     private var movieId: Int = -1
     private var posterUrl: String = ""
     private lateinit var reviewsContainer: LinearLayout
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,25 +69,25 @@ class FeatureFilmInfoFragment : Fragment(){
             //Тут надо что-то сделать
         }
 
-        val sharedReview = requireContext().getSharedPreferences("movie_reviews", android.content.Context.MODE_PRIVATE)
-        val review = sharedReview.getString("review$movieId", null)
-        val rating = sharedReview.getFloat("rating$movieId", -1f)
+        val reviews = loadLocalReviews(movieId)
 
-        if (!review.isNullOrBlank() && rating >= 0f) {
-            val reviewTextView = TextView(requireContext()).apply {
-                text = "Ваш отзыв:\n$review\nОценка: " + rating.toString()
-                textSize = 16f
-                setPadding(0,16,0,16)
-            }
-            reviewsContainer.addView(reviewTextView)
-        } else {
+        if (reviews.isEmpty()) {
             val emptyTextView = TextView(requireContext()).apply {
                 text = "Отзывов нет)"
                 textSize = 16f
-                setPadding(0,16,0,16)
+                setPadding(0, 16, 0, 16)
                 setTextColor(android.graphics.Color.GRAY)
             }
             reviewsContainer.addView(emptyTextView)
+        } else {
+            for ((text, rating) in reviews) {
+                val reviewTextView = TextView(requireContext()).apply {
+                    this.text = "Оценка: $rating\nОтзыв: $text"
+                    textSize = 16f
+                    setPadding(0, 16, 0, 16)
+                }
+                reviewsContainer.addView(reviewTextView)
+            }
         }
     }
 
@@ -106,6 +105,37 @@ class FeatureFilmInfoFragment : Fragment(){
                 }
             }
         }
+    }
+
+    private fun actionButtonLogic(view: View) {
+        val actionButton: View = view.findViewById(R.id.floatingActionButton)
+
+        actionButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(
+                    R.id.fragment_container,
+                    ReviewFragment.newInstance(
+                        title = textTitle.text.toString(),
+                        posterUrl = posterUrl,
+                        rating = ratingBar.rating,
+                        movieID = movieId
+                    )
+                )
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+
+    fun loadLocalReviews(movieID: Int): List<Pair<String, Float>> {
+        val sharedReview = requireContext().getSharedPreferences("movie_reviews", android.content.Context.MODE_PRIVATE)
+        val reviewsJson = sharedReview.getString("reviews$movieID", "[]")
+        val reviewsArray = JSONArray(reviewsJson)
+        val result = mutableListOf<Pair<String, Float>>()
+        for (i in 0 until reviewsArray.length()) {
+            val obj = reviewsArray.getJSONObject(i)
+            result.add(obj.getString("text") to obj.getDouble("rating").toFloat())
+        }
+        return result
     }
 
 
@@ -132,21 +162,8 @@ class FeatureFilmInfoFragment : Fragment(){
 
         loadMovieInfo()
 
-        val actionButton: View = view.findViewById(R.id.floatingActionButton)
-
-        actionButton.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(
-                    R.id.fragment_container,
-                    ReviewFragment.newInstance(
-                        title = textTitle.text.toString(),
-                        posterUrl = posterUrl,
-                        rating = ratingBar.rating,
-                        movieID = movieId
-                    )
-                )
-            .addToBackStack(null)
-            .commit()
-        }
+        actionButtonLogic(view)
     }
+
+
 }

@@ -37,6 +37,10 @@ class ReviewFragment : Fragment(){
         return result
     }
 
+    private fun reviewButtonLogic(view: View) {
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -88,8 +92,7 @@ class ReviewFragment : Fragment(){
             oldReviews.put(newReview)
 
             sharedReview.edit()
-                .putString("review$movieID", reviewText)
-                .putFloat("rating$movieID", userRating)
+                .putString("reviews$movieID", oldReviews.toString())
                 .apply()
 
             Toast.makeText(requireContext(), "Отзыв сохранён!", Toast.LENGTH_SHORT).show()
