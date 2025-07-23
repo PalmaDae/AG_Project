@@ -26,6 +26,8 @@ class HomeFragment : Fragment() {
     private lateinit var searchView: android.widget.SearchView
     private var allMovies: List<Movie> = emptyList()
 
+    //Боюсь, за ддос апи
+    private var isSearching = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,12 +59,8 @@ class HomeFragment : Fragment() {
         }
         recyclerView.adapter = moviesAdapter
 
-
         searchView = view.findViewById(R.id.searchView)
         searchView.setOnQueryTextListener(MyOnQueryTextListener())
-
-//        searchView.isIconified = false
-//        searchView.requestFocusFromTouch()
 
         loadRandomMovies()
 
@@ -102,6 +100,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun searchMovies(query: String?) {
+        if (isSearching) return
+        isSearching = true
+
+
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 if (query != null && query.isNotEmpty()) {

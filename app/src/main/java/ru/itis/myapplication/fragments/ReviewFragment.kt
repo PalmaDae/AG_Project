@@ -10,6 +10,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import org.json.JSONArray
+import org.json.JSONObject
 import ru.itis.myapplication.R
 
 class ReviewFragment : Fragment(){
@@ -19,6 +21,20 @@ class ReviewFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_review, container, false)
+    }
+
+    fun loadReviews(movieID: Int): List<Pair<String, Float>> {
+        val sharedReview = requireContext().getSharedPreferences("movie_reviews", android.content.Context.MODE_PRIVATE)
+        val reviewsJson = sharedReview.getString("reviews$movieID", "[]")
+        val reviewsArray = JSONArray(reviewsJson)
+        val result = mutableListOf<Pair<String, Float>>()
+        for (i in 0 until reviewsArray.length()) {
+            val reviewObject = reviewsArray.getJSONObject(i)
+            val text = reviewObject.getString("text")
+            val rating = reviewObject.getDouble("rating").toFloat()
+            result.add(text to rating)
+        }
+        return result
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,13 +77,32 @@ class ReviewFragment : Fragment(){
             }
 
             val sharedReview = requireContext().getSharedPreferences("movie_reviews", android.content.Context.MODE_PRIVATE)
+
+            val oldReviewsJson = sharedReview.getString("reviews$movieID", "[]")
+            val oldReviews = JSONArray(oldReviewsJson)
+
+            val newReview = JSONObject()
+            newReview.put("text", reviewText)
+            newReview.put("rating", userRating)
+
+            oldReviews.put(newReview)
+
             sharedReview.edit()
                 .putString("review$movieID", reviewText)
                 .putFloat("rating$movieID", userRating)
                 .apply()
 
+            Toast.makeText(requireContext(), "Отзыв сохранён!", Toast.LENGTH_SHORT).show()
+
             parentFragmentManager.popBackStack()
         }
+
+        val reviewsTextView = view.findViewById<TextView>(R.id.reviewsTextView)
+        val allReviews = loadReviews(movieID)
+        val reviewsDisplay = allReviews.joinToString(separator = "\n\n") { (text, rating) ->
+            "Оценка: $rating\nОтзыв: $text"
+        }
+        reviewsTextView.text = reviewsDisplay
     }
 
     companion object {
@@ -75,7 +110,6 @@ class ReviewFragment : Fragment(){
         private const val ARG_POSTER = "arg_poster"
         private const val ARG_RATING = "arg_rating"
         private const val ARG_ID = "arg_id"
-
         fun newInstance(movieID: Int,title: String, posterUrl: String, rating: Float): ReviewFragment {
             val fragment = ReviewFragment()
             val args = Bundle()
