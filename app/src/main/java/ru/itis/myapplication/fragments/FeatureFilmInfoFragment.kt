@@ -1,14 +1,17 @@
 package ru.itis.myapplication.fragments
 
+import android.R.attr.text
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.setPadding
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -28,6 +31,8 @@ class FeatureFilmInfoFragment : Fragment(){
     private lateinit var ratingBar: RatingBar
     private var movieId: Int = -1
     private var posterUrl: String = ""
+    private lateinit var reviewsContainer: LinearLayout
+
 
 
     override fun onCreateView(
@@ -64,6 +69,27 @@ class FeatureFilmInfoFragment : Fragment(){
         } else {
             //Тут надо что-то сделать
         }
+
+        val sharedReview = requireContext().getSharedPreferences("movie_reviews", android.content.Context.MODE_PRIVATE)
+        val review = sharedReview.getString("review$movieId", null)
+        val rating = sharedReview.getFloat("rating$movieId", -1f)
+
+        if (!review.isNullOrBlank() && rating >= 0f) {
+            val reviewTextView = TextView(requireContext()).apply {
+                text = "Ваш отзыв:\n$review\nОценка: " + rating.toString()
+                textSize = 16f
+                setPadding(0,16,0,16)
+            }
+            reviewsContainer.addView(reviewTextView)
+        } else {
+            val emptyTextView = TextView(requireContext()).apply {
+                text = "Отзывов нет)"
+                textSize = 16f
+                setPadding(0,16,0,16)
+                setTextColor(android.graphics.Color.GRAY)
+            }
+            reviewsContainer.addView(emptyTextView)
+        }
     }
 
     private fun loadMovieInfo() {
@@ -86,6 +112,7 @@ class FeatureFilmInfoFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         ViewCompat.setOnApplyWindowInsetsListener(view) { viewToApply, insets ->
             val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             viewToApply.    updateLayoutParams<ViewGroup.MarginLayoutParams> {
@@ -96,11 +123,12 @@ class FeatureFilmInfoFragment : Fragment(){
 
 
         movieId = arguments?.getInt(ARG_MOVIE_ID) ?: -1
-
         imagePoster = view.findViewById(R.id.posterIV)
         textTitle = view.findViewById(R.id.titleTV)
         textDescription = view.findViewById(R.id.descriptionTV)
         ratingBar = view.findViewById(R.id.ratingBar)
+        reviewsContainer = view.findViewById(R.id.reviewsContainer)
+
 
         loadMovieInfo()
 
@@ -113,7 +141,8 @@ class FeatureFilmInfoFragment : Fragment(){
                     ReviewFragment.newInstance(
                         title = textTitle.text.toString(),
                         posterUrl = posterUrl,
-                        rating = ratingBar.rating
+                        rating = ratingBar.rating,
+                        movieID = movieId
                     )
                 )
             .addToBackStack(null)
