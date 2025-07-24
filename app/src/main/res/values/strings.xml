@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Awe Grade</string>
+    <string name="review_Here">Отзывы будут здесь</string>
+    <string name="no_review">Отзывов нет)</string>
+    <string name="send_review">Отправить отзыв</string>
+    <string name="your_review">Ваш отзыв</string>
+    <string name="movie_title">Movie Title</string>
+    <string name="search_media">Поиск медиа</string>
 </resources>

@@ -27,18 +27,6 @@ class FeatureFilmInfoFragment : Fragment() {
     private var movieId: Int = -1
     private var posterUrl: String = ""
 
-    companion object {
-        private const val ARG_MOVIE_ID = "movie_id"
-
-        fun newInstance(movieId: Int): FeatureFilmInfoFragment {
-            return FeatureFilmInfoFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_MOVIE_ID, movieId)
-                }
-            }
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -101,7 +89,7 @@ class FeatureFilmInfoFragment : Fragment() {
 
         if (reviews.isEmpty()) {
             reviewsContainer.addView(TextView(requireContext()).apply {
-                text = "Отзывов нет)"
+                text = getString(R.string.no_review)
                 textSize = 16f
                 setPadding(0, 16, 0, 16)
                 setTextColor(android.graphics.Color.GRAY)
@@ -142,6 +130,18 @@ class FeatureFilmInfoFragment : Fragment() {
                 )
                 .addToBackStack(null)
                 .commit()
+        }
+    }
+
+    companion object {
+        private const val ARG_MOVIE_ID = "movie_id"
+
+        fun newInstance(movieId: Int): FeatureFilmInfoFragment {
+            return FeatureFilmInfoFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_MOVIE_ID, movieId)
+                }
+            }
         }
     }
 }
