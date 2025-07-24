@@ -66,7 +66,7 @@ class FeatureFilmInfoFragment : Fragment() {
                     updateUI(movie)
                 }
             } catch (_: Exception) {
-
+                Toast.makeText(context, getString(R.string.error_loading_movie), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -97,7 +97,7 @@ class FeatureFilmInfoFragment : Fragment() {
         } else {
             for ((text, rating) in reviews) {
                 reviewsContainer.addView(TextView(requireContext()).apply {
-                    this.text = "Оценка: $rating\nОтзыв: $text"
+                    this.text = getString(R.string.review) + rating + "\n" + getString(R.string.rate) + text
                     textSize = 16f
                     setPadding(0, 16, 0, 16)
                 })

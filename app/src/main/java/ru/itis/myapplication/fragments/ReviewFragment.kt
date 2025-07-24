@@ -42,7 +42,7 @@ class ReviewFragment : Fragment() {
             .into(posterImageView)
 
         ratingBar.setOnRatingBarChangeListener { _, newRating, _ ->
-            Toast.makeText(requireContext(), "Оценка: $newRating", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.rate) + newRating, Toast.LENGTH_SHORT).show()
         }
 
         saveButton.setOnClickListener {
@@ -55,7 +55,7 @@ class ReviewFragment : Fragment() {
 
     private fun saveReview(movieID: Int, text: String, rating: Float) {
         if (text.isBlank()) {
-            Toast.makeText(requireContext(), "Напишите отзыв)", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.review_write), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -74,7 +74,7 @@ class ReviewFragment : Fragment() {
             .putString("reviews$movieID", array.toString())
             .apply()
 
-        Toast.makeText(requireContext(), "Отзыв сохранён!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(R.string.review_saved), Toast.LENGTH_SHORT).show()
         parentFragmentManager.popBackStack()
     }
 
@@ -91,10 +91,10 @@ class ReviewFragment : Fragment() {
 
     private fun formatReviews(reviews: List<Pair<String, Float>>): String {
         return if (reviews.isEmpty()) {
-            "Отзывов пока нет)"
+            getString(R.string.no_review)
         } else {
             reviews.joinToString("\n\n") { (text, rating) ->
-                "Оценка: $rating\nОтзыв: $text"
+                getString(R.string.rate) + "\n" + getString(R.string.review) + text
             }
         }
     }

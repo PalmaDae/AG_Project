@@ -6,4 +6,13 @@
     <string name="your_review">Ваш отзыв</string>
     <string name="movie_title">Movie Title</string>
     <string name="search_media">Поиск медиа</string>
+    <string name="error_loading_movie">Ошибка при загрузке фильма</string>
+    <string name="review">Отзыв: </string>
+    <string name="rate">Оценка</string>
+    <string name="review_write">Напишите отзыв</string>
+    <string name="load_movie_error">Ошибка загрузки фильма</string>
+    <string name="no_title">No title</string>
+    <string name="search_movie_error">Ошибка поиска</string>
+    <string name="review_saved">Отзыв сохранён</string>
+
 </resources>

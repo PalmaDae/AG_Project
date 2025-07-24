@@ -73,7 +73,7 @@ class HomeFragment : Fragment() {
                     moviesAdapter.updateMovies(movies)
                 }
             } catch (e: Exception) {
-                showToastOnMain("Ошибка загрузки случайных фильмов")
+                showToastOnMain(getString(R.string.error_loading_movie))
                 println("Error loading random movies: ${e.message}")
             }
         }
@@ -96,7 +96,7 @@ class HomeFragment : Fragment() {
                     loadRandomMovies()
                 }
             } catch (e: Exception) {
-                showToastOnMain("Ошибка при поиске")
+                showToastOnMain(getString(R.string.search_movie_error))
                 println("Error searching movies: ${e.message}")
             } finally {
                 isSearching = false
